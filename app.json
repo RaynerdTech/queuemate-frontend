@@ -29,6 +29,9 @@
       "supportsTablet": true
     },
     "android": {
+      // 👇 USE THIS VALUE IF YOU DON'T HAVE A DOMAIN
+      "package": "com.spotifyshopify", 
+      
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
