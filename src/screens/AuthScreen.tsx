@@ -97,7 +97,7 @@ export default function AuthScreen() {
           >
             QueueMate
           </Text>
-          <Text 
+          <Text     
             style={styles.heroSubtitle}
             accessible={true}
           >
