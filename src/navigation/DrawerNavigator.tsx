@@ -52,7 +52,7 @@ export default function DrawerNavigator() {
       <Drawer.Screen
         name="BarberManagement"
         component={BarberManagementScreen}
-        options={{ title: 'BarberManagement' }}
+        options={{ title: 'Staff Management' }}
       />
     </Drawer.Navigator>
   );

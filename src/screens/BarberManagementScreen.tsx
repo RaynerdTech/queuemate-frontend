@@ -259,8 +259,8 @@ export default function BarberManagementScreen({ navigation }: any) {
   return (
     <View className="flex-1 bg-white">
       {/* Header */}
-      <View className="bg-blue-600 px-6 pt-8 pb-12">
-        <Text className="text-white text-3xl font-bold">Barber Management</Text>
+      <View className="bg-blue-600 px-6 pt-12 pb-12">
+        <Text className="text-white text-3xl font-bold">Staff Management</Text>
         <Text className="text-blue-100 text-xl mt-1">
           Manage your team and schedules
         </Text>
@@ -285,7 +285,7 @@ export default function BarberManagementScreen({ navigation }: any) {
           </View>
           <View className="ml-3 flex-1">
             <Text className="text-gray-900 font-semibold text-xl">
-              Add New Barber
+              Add New Staff
             </Text>
             <Text className="text-gray-500 text-xl mt-0.5">
               Create a new team member
@@ -301,7 +301,7 @@ export default function BarberManagementScreen({ navigation }: any) {
           <Feather name="search" size={18} color="#9CA3AF" />
           <TextInput
             className="flex-1 ml-3 text-xl text-gray-900"
-            placeholder="Search barbers or services..."
+            placeholder="Search staffs or services..."
             placeholderTextColor="#9CA3AF"
             value={searchQuery}
             onChangeText={setSearchQuery}
