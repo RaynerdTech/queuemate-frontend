@@ -1,27 +1,24 @@
 // src/context/AuthContext.tsx
-
 import React, { createContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/api';
 import {
   getToken,
   setToken,
-  removeToken,
   setUser,
   getUser,
   clearAll,
 } from '../utils/storage';
 
-// 🔥 CORRECTED AuthState: Removed userName, kept userEmail
-type AuthState = {
+export type AuthState = {
   token: string | null;
   userId: string | null;
   shopId: string | null;
-  userEmail: string | null; // <-- Kept this to fix the Drawer error
+  userEmail: string | null;
   loading: boolean;
 };
 
-type AuthContextValue = {
+export type AuthContextValue = {
   state: AuthState;
   login: (email: string, password: string) => Promise<{ ok: boolean; message?: string }>;
   signup: (email: string, password: string) => Promise<{ ok: boolean; message?: string }>;
@@ -36,9 +33,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     token: null,
     userId: null,
     shopId: null,
-    userEmail: null, // 🔥 INITIALIZE
+    userEmail: null,
     loading: true,
   });
+
+  // 🔹 Check if JWT token is expired
+  const isTokenExpired = (token: string) => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
+    }
+  };
 
   // Restore session on app start
   useEffect(() => {
@@ -48,14 +55,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const userJson = await getUser();
 
         if (token && userJson) {
+          // Auto logout if token expired
+          if (isTokenExpired(token)) {
+            await logout();
+            return;
+          }
+
           const parsed = JSON.parse(userJson);
           axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-
           setState({
             token,
             userId: parsed.userId,
             shopId: parsed.shopId || null,
-            userEmail: parsed.userEmail || null, // 🔥 LOAD
+            userEmail: parsed.userEmail || null,
             loading: false,
           });
         } else {
@@ -67,13 +79,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     })();
   }, []);
 
+  useEffect(() => {
+  const interceptor = axios.interceptors.response.use(
+    response => response,
+    async error => {
+      if (error.response?.status === 401) {
+        await logout(); // force logout on 401
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  return () => axios.interceptors.response.eject(interceptor);
+}, []);
+
+
   const login = async (email: string, password: string) => {
     try {
       const res = await axios.post(API_ENDPOINTS.LOGIN, { email, password });
       const { token, userId, shopId } = res.data;
 
       await setToken(token);
-      // 🔥 SAVE userEmail to storage
       await setUser(JSON.stringify({ userId, shopId: shopId || null, userEmail: email }));
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
@@ -81,16 +107,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         token,
         userId,
         shopId: shopId || null,
-        userEmail: email, // 🔥 UPDATE STATE
+        userEmail: email,
         loading: false,
       });
 
       return { ok: true };
     } catch (err: any) {
-      return {
-        ok: false,
-        message: err?.response?.data?.message || 'Login failed',
-      };
+      return { ok: false, message: err?.response?.data?.message || 'Login failed' };
     }
   };
 
@@ -100,7 +123,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { token, userId } = res.data;
 
       await setToken(token);
-      // 🔥 SAVE userEmail to storage
       await setUser(JSON.stringify({ userId, shopId: null, userEmail: email }));
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
@@ -108,16 +130,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         token,
         userId,
         shopId: null,
-        userEmail: email, // 🔥 UPDATE STATE
+        userEmail: email,
         loading: false,
       });
 
       return { ok: true };
     } catch (err: any) {
-      return {
-        ok: false,
-        message: err?.response?.data?.message || 'Signup failed',
-      };
+      return { ok: false, message: err?.response?.data?.message || 'Signup failed' };
     }
   };
 
@@ -129,7 +148,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       token: null,
       userId: null,
       shopId: null,
-      userEmail: null, // 🔥 CLEAR
+      userEmail: null,
       loading: false,
     });
   };
@@ -141,7 +160,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const parsed = userJson ? JSON.parse(userJson) : {};
     parsed.shopId = shopId;
 
-    // 🔥 Make sure we preserve the userEmail when saving back
     await setUser(JSON.stringify({ ...parsed, shopId }));
   };
 

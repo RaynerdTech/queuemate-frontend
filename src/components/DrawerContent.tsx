@@ -1,4 +1,4 @@
-// src/components/DrawerContent.tsx (Corrected)
+// src/components/DrawerContent.tsx
 
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
@@ -10,7 +10,6 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
   const { state, logout } = useContext(AuthContext)!;
 
   const handleLogout = () => {
-    // ... (Logout logic remains the same)
     Alert.alert(
       "Log Out",
       "Are you sure you want to log out?",
@@ -27,27 +26,36 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
   };
 
   return (
-    <View style={styles.container} className="bg-white dark:bg-gray-900 flex-1">
-      <DrawerContentScrollView {...props}>
+    <View style={styles.container} className="bg-white flex-1">
+      <DrawerContentScrollView {...props} showsVerticalScrollIndicator={false}>
         {/* Header/User Info */}
-        <View className="p-4 mb-4 border-b border-gray-200 dark:border-gray-700">
-          <Text className="text-2xl font-bold text-gray-900 dark:text-white">
-            Shop Owner Account
+        <View className="px-6 py-8 mb-2 bg-blue-600">
+          <View className="w-16 h-16 bg-white/20 rounded-full items-center justify-center mb-4">
+            <MaterialCommunityIcons name="account-circle" size={36} color="#ffffff" />
+          </View>
+          <Text className="text-3xl font-bold text-white mb-1">
+            Shop Owner
           </Text>
-          <Text className="text-gray-500 dark:text-gray-400 mt-1 text-[16px]">
-            {state.userEmail || 'Loading...'} {/* Display the email */}
+          <Text className="text-blue-100 text-xl">
+            {state.userEmail || 'Loading...'}
           </Text>
         </View>
 
         {/* Default Drawer Items */}
-        <DrawerItemList {...props} />
+        <View className="px-2 py-4">
+          <DrawerItemList {...props} />
+        </View>
       </DrawerContentScrollView>
       
       {/* Logout Button */}
-      <View className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <TouchableOpacity onPress={handleLogout} className="flex-row items-center p-3 rounded-xl bg-red-50 dark:bg-red-900/40">
+      <View className="px-6 py-6 border-t border-gray-200">
+        <TouchableOpacity 
+          onPress={handleLogout} 
+          className="flex-row items-center px-4 py-3.5 rounded-xl bg-red-50"
+          activeOpacity={0.7}
+        >
           <MaterialCommunityIcons name="logout" size={24} color="#ef4444" />
-          <Text className="text-red-500 font-semibold ml-4 text-lg">
+          <Text className="text-red-600 font-semibold ml-3 text-xl">
             Logout
           </Text>
         </TouchableOpacity>

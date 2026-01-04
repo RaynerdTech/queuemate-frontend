@@ -5,6 +5,8 @@ import DashboardScreen from '../screens/DashboardScreen';
 import ShopSetupScreen from '../screens/ShopSetupScreen';
 import EditShopScreen from '../screens/EditShopScreen'; // 🔥 Import the new screen
 import CustomDrawerContent from '../components/DrawerContent'; // 🔥 Import the custom content
+import BarberManagementScreen from '../screens/BarberManagementScreen'; 
+
 
 const Drawer = createDrawerNavigator();
 
@@ -24,7 +26,7 @@ export default function DrawerNavigator() {
             fontWeight: '600',
         },
         drawerItemStyle: {
-            marginVertical: 4,
+            marginVertical: 0,
         }
       }}
     >
@@ -46,6 +48,11 @@ export default function DrawerNavigator() {
         name="EditShop"
         component={EditShopScreen}
         options={{ title: 'Edit Shop Details' }}
+      />
+      <Drawer.Screen
+        name="BarberManagement"
+        component={BarberManagementScreen}
+        options={{ title: 'BarberManagement' }}
       />
     </Drawer.Navigator>
   );
