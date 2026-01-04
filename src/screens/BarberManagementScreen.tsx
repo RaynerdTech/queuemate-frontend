@@ -439,11 +439,11 @@ export default function BarberManagementScreen({ navigation }: any) {
             className="bg-white rounded-2xl w-full max-w-sm overflow-hidden"
           >
             {/* Modal Header */}
-            <View className="bg-blue-600 px-6 py-5">
+            <View className="bg-blue-600 px-6 py-6">
               <Text className="text-white text-2xl font-bold">
                 Change Status
               </Text>
-              <Text className="text-blue-100 text-lg mt-1">
+              <Text className="text-blue-100 text-xl mt-1">
                 {selectedBarber?.name}
               </Text>
             </View>
@@ -459,7 +459,7 @@ export default function BarberManagementScreen({ navigation }: any) {
                   <Text className="text-green-900 font-semibold text-xl">
                     Active
                   </Text>
-                  <Text className="text-green-700 text-base mt-0.5">
+                  <Text className="text-green-700 text-xl mt-0.5">
                     Available for appointments
                   </Text>
                 </View>
