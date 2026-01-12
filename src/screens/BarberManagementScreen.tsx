@@ -18,6 +18,7 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { API_ENDPOINTS } from '../config/api';
 import { AuthContext } from '../context/AuthContext';
 import AddBarberForm from './AddBarber';
+import EditBarberModal from './EditBarberModal';
 
 type Service = {
   name: string;
@@ -38,6 +39,7 @@ type Barber = {
 type FilterType = 'all' | 'active' | 'On Break' | 'Off Today';
 
 export default function BarberManagementScreen({ navigation }: any) {
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const auth = useContext(AuthContext);
   const [showAddForm, setShowAddForm] = useState(false);
   const [barbers, setBarbers] = useState<Barber[]>([]);
@@ -214,15 +216,16 @@ export default function BarberManagementScreen({ navigation }: any) {
 
       {/* Action Buttons */}
       <View className="flex-row items-center" style={{ gap: 8 }}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('EditBarber', { barberId: barber._id })
-          }
-          className="flex-1 bg-blue-50 py-2.5 rounded-lg flex-row items-center justify-center"
-        >
-          <Feather name="edit-2" size={16} color="#2563EB" />
-          <Text className="text-blue-600 font-medium text-xl ml-1.5">Edit</Text>
-        </TouchableOpacity>
+    <TouchableOpacity
+  onPress={() => {
+    setSelectedBarber(barber); // Select the barber data
+    setEditModalVisible(true);  // Open the modal instead of navigating
+  }}
+  className="flex-1 bg-blue-50 py-2.5 rounded-lg flex-row items-center justify-center"
+>
+  <Feather name="edit-2" size={16} color="#2563EB" />
+  <Text className="text-blue-600 font-medium text-xl ml-1.5">Edit</Text>
+</TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => openStatusModal(barber)}
@@ -519,6 +522,18 @@ export default function BarberManagementScreen({ navigation }: any) {
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
+     <EditBarberModal
+        isVisible={editModalVisible}
+        barber={selectedBarber}
+        onClose={() => {
+          setEditModalVisible(false);
+          setSelectedBarber(null);
+        }}
+        onSuccess={() => {
+          setEditModalVisible(false);
+          fetchBarbers(); // Refresh your list
+        }}
+      />
     </View>
   );
 }

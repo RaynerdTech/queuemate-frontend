@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
   LOGIN: `${API_BASE_URL}/api/auth/login`,
   SHOPS: `${API_BASE_URL}/api/shops`,
   BARBER: `${API_BASE_URL}/api/barbers`,
+  EDITBARBER: `${API_BASE_URL}/api/barbers/:barberId`,
   // Add other endpoints here as your app grows:
   GETSHOP: `${API_BASE_URL}/api/shops/:slugOrId`,
   UPDATESHOP: `${API_BASE_URL}/api/shops/update/:id`,
