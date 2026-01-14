@@ -86,7 +86,6 @@ const EditBarberModal = ({ isVisible, onClose, onSuccess, barber }: EditBarberMo
           </View>
 
           <ScrollView className="px-6 py-5" keyboardShouldPersistTaps="handled">
-            {/* Name Field */}
             <Text className="text-gray-700 text-xl mb-2 font-medium">Name</Text>
             <TextInput
               className="border border-gray-300 rounded-lg px-3 py-3 mb-5 text-gray-900 text-xl"
@@ -95,7 +94,6 @@ const EditBarberModal = ({ isVisible, onClose, onSuccess, barber }: EditBarberMo
               placeholderTextColor="#9CA3AF"
             />
 
-            {/* Services Field */}
             <Text className="text-gray-700 text-xl mb-2 font-medium">Services</Text>
             <View className="flex-row mb-3">
               <TextInput
@@ -113,7 +111,6 @@ const EditBarberModal = ({ isVisible, onClose, onSuccess, barber }: EditBarberMo
               </TouchableOpacity>
             </View>
 
-            {/* Service Chips */}
             <View className="flex-row flex-wrap mb-5">
               {services.map((service, index) => (
                 <View key={index} className="bg-blue-100 flex-row items-center px-3 py-2 rounded-md mr-2 mb-2">
@@ -125,7 +122,6 @@ const EditBarberModal = ({ isVisible, onClose, onSuccess, barber }: EditBarberMo
               ))}
             </View>
 
-            {/* Average Duration Field */}
             <Text className="text-gray-700 text-xl mb-2 font-medium">Average Duration (minutes)</Text>
             <TextInput
               className="border border-gray-300 rounded-lg px-3 py-3 mb-5 text-gray-900 text-xl"
@@ -135,30 +131,42 @@ const EditBarberModal = ({ isVisible, onClose, onSuccess, barber }: EditBarberMo
               placeholderTextColor="#9CA3AF"
             />
 
-            {/* Status Field */}
             <Text className="text-gray-700 text-xl mb-2 font-medium">Status</Text>
             <View className="flex-row mb-6" style={{ gap: 8 }}>
               <TouchableOpacity 
                 onPress={() => setStatus('active')}
-                className={`flex-1 py-3 rounded-lg items-center border-2 ${status === 'active' ? 'bg-green-50 border-green-500' : 'bg-white border-gray-300'}`}
+                className={`flex-1 py-3 rounded-lg items-center border-2 ${
+                  status === 'active' ? 'bg-green-50 border-green-500' : 'bg-white border-gray-300'
+                }`}
               >
-                <Text className={`font-medium text-lg ${status === 'active' ? 'text-green-700' : 'text-gray-600'}`}>Active</Text>
+                <Text className={`font-medium text-lg ${status === 'active' ? 'text-green-700' : 'text-gray-600'}`}>
+                  Active
+                </Text>
               </TouchableOpacity>
+
               <TouchableOpacity 
                 onPress={() => setStatus('On Break')}
-                className={`flex-1 py-3 rounded-lg items-center border-2 ${status === 'On Break' ? 'bg-gray-50 border-gray-400' : 'bg-white border-gray-300'}`}
+                className={`flex-1 py-3 rounded-lg items-center border-2 ${
+                  status === 'On Break' ? 'bg-yellow-50 border-yellow-500' : 'bg-white border-gray-300'
+                }`}
               >
-                <Text className={`font-medium text-lg ${status === 'On Break' ? 'text-gray-700' : 'text-gray-600'}`}>Break</Text>
+                <Text className={`font-medium text-lg ${status === 'On Break' ? 'text-yellow-700' : 'text-gray-600'}`}>
+                  Break
+                </Text>
               </TouchableOpacity>
+
               <TouchableOpacity 
                 onPress={() => setStatus('Off Today')}
-                className={`flex-1 py-3 rounded-lg items-center border-2 ${status === 'Off Today' ? 'bg-gray-50 border-gray-400' : 'bg-white border-gray-300'}`}
+                className={`flex-1 py-3 rounded-lg items-center border-2 ${
+                  status === 'Off Today' ? 'bg-red-50 border-red-500' : 'bg-white border-gray-300'
+                }`}
               >
-                <Text className={`font-medium text-lg ${status === 'Off Today' ? 'text-gray-700 '  : 'text-gray-600'}`}>Off</Text>
+                <Text className={`font-medium text-lg ${status === 'Off Today' ? 'text-red-700' : 'text-gray-600'}`}>
+                  Off
+                </Text>
               </TouchableOpacity>
             </View>
 
-            {/* Bottom Buttons */}
             <View className="flex-row" style={{ gap: 12 }}>
               <TouchableOpacity 
                 onPress={onClose}

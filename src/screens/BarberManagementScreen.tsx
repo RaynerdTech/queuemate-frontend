@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  Clipboard,
   Modal,
 } from 'react-native';
 import axios from 'axios';
@@ -19,6 +18,7 @@ import { API_ENDPOINTS } from '../config/api';
 import { AuthContext } from '../context/AuthContext';
 import AddBarberForm from './AddBarber';
 import EditBarberModal from './EditBarberModal';
+import * as Clipboard from 'expo-clipboard';
 
 type Service = {
   name: string;
@@ -50,6 +50,30 @@ export default function BarberManagementScreen({ navigation }: any) {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [selectedBarber, setSelectedBarber] = useState<Barber | null>(null);
+
+  const deleteBarber = async (barberId: string) => {
+  Alert.alert('Confirm Delete', 'Are you sure you want to delete this team member?', [
+    { text: 'Cancel', style: 'cancel' },
+    {
+      text: 'Delete',
+      style: 'destructive',
+      onPress: async () => {
+        try {
+          // Use the config and replace the placeholder
+          const deleteUrl = API_ENDPOINTS.DELETEBARBER.replace(':barberId', barberId);
+          await axios.delete(deleteUrl);
+          
+          fetchBarbers(); // Refresh list
+          Alert.alert('Success', 'Team member deleted');
+        } catch (err) {
+          Alert.alert('Error', 'Failed to delete team member');
+        }
+      },
+    },
+  ]);
+};
+
+  
 
   useEffect(() => {
     fetchBarbers();
@@ -102,37 +126,21 @@ export default function BarberManagementScreen({ navigation }: any) {
     setStatusModalVisible(true);
   };
 
-  const updateBarberStatus = async (newStatus: 'active' | 'On Break' | 'Off Today') => {
-    if (!selectedBarber) return;
+const updateBarberStatus = async (newStatus: 'active' | 'On Break' | 'Off Today') => {
+  if (!selectedBarber) return;
+  
+  try {
+    // FIX: Use EDITBARBER endpoint and .replace() to match the delete pattern
+    const updateUrl = API_ENDPOINTS.EDITBARBER.replace(':barberId', selectedBarber._id);
+    await axios.patch(updateUrl, { status: newStatus });
     
-    try {
-      await axios.patch(`${API_ENDPOINTS.BARBER}/${selectedBarber._id}`, { status: newStatus });
-      fetchBarbers();
-      setStatusModalVisible(false);
-      setSelectedBarber(null);
-    } catch (err) {
-      Alert.alert('Error', 'Failed to update status');
-    }
-  };
-
-  const deleteBarber = async (barberId: string) => {
-    Alert.alert('Confirm Delete', 'Are you sure you want to delete this team member?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await axios.delete(`${API_ENDPOINTS.BARBER}/${barberId}`);
-            fetchBarbers();
-            Alert.alert('Success', 'Team member deleted');
-          } catch (err) {
-            Alert.alert('Error', 'Failed to delete team member');
-          }
-        },
-      },
-    ]);
-  };
+    fetchBarbers();
+    setStatusModalVisible(false);
+    setSelectedBarber(null);
+  } catch (err) {
+    Alert.alert('Error', 'Failed to update status');
+  }
+};
 
   const getFilterCount = (filter: FilterType) => {
     if (filter === 'all') return barbers.length;
@@ -345,7 +353,7 @@ export default function BarberManagementScreen({ navigation }: any) {
             onPress={() => setActiveFilter('active')}
             className={`mr-2 px-5 py-2.5 rounded-full ${
               activeFilter === 'active'
-                ? 'bg-blue-600'
+                ? 'bg-green-600'
                 : 'bg-white border border-gray-300'
             }`}
           >
@@ -358,28 +366,30 @@ export default function BarberManagementScreen({ navigation }: any) {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => setActiveFilter('On Break')}
-            className={`mr-2 px-5 py-2.5 rounded-full ${
-              activeFilter === 'On Break'
-                ? 'bg-blue-600'
-                : 'bg-white border border-gray-300'
-            }`}
-          >
-            <Text
-              className={`font-medium text-xl ${
-                activeFilter === 'On Break' ? 'text-white' : 'text-gray-700'
-              }`}
-            >
-              On Break ({getFilterCount('On Break')})
-            </Text>
-          </TouchableOpacity>
+     <TouchableOpacity
+  onPress={() => setActiveFilter('On Break')}
+  style={[
+    { borderRadius: 9999, borderWidth: 1 },
+    activeFilter === 'On Break' 
+      ? { backgroundColor: '#CA8A04', borderColor: '#CA8A04' } 
+      : { backgroundColor: 'white', borderColor: '#D1D5DB' }
+  ]}
+  className="mr-2 px-5 py-2.5"
+>
+  <Text
+    className={`font-medium text-xl ${
+      activeFilter === 'On Break' ? 'text-white' : 'text-gray-700'
+    }`}
+  >
+    On Break ({getFilterCount('On Break')})
+  </Text>
+</TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => setActiveFilter('Off Today')}
             className={`px-5 py-2.5 rounded-full ${
               activeFilter === 'Off Today'
-                ? 'bg-blue-600'
+                ? 'bg-red-600'
                 : 'bg-white border border-gray-300'
             }`}
           >
